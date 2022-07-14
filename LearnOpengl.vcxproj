@@ -146,7 +146,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Dev\Opengl\glad.c" />
+    <ClCompile Include="Colliding_star.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="multiColorTriangle.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="twoTriangles.h" />
+    <ClInclude Include="colorChange.h" />
+    <ClInclude Include="vertexShaderColor.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.fs" />
+    <None Include="shader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
