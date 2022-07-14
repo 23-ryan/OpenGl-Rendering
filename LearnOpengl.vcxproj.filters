@@ -24,7 +24,7 @@
     <ClCompile Include="..\..\..\..\..\Dev\Opengl\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Colliding_star.cpp">
+    <ClCompile Include="Colliding_star.h">
       <Filter>beginning</Filter>
     </ClCompile>
   </ItemGroup>

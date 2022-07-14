@@ -146,7 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Dev\Opengl\glad.c" />
-    <ClCompile Include="Colliding_star.cpp" />
+    <ClCompile Include="Colliding_star.h" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
