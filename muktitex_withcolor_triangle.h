@@ -1,5 +1,3 @@
-// get the shader from hthe end of this file, 
-// and place those into the corresponding shader files
 
 
 #include<iostream>
@@ -42,20 +40,23 @@ int main() {
 	Shader ourShader("shader.vs", "shader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
-	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
-	// then it tends to wrap according to the method specified.
+	//float vertices[] = {
+	//	// positions          // colors           // texture coords
+	//	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+	//	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+	//	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+	//	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+	//};
+
 	float vertices[] = {
-		// positions          // colors           // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+		// vertices				// colors				// texture coord
+		 0.0f,  0.5f, 0.0f,     1.0f, 0.0f, 0.0f,		0.5f, 1.0f,
+		-0.5f, -0.5f, 0.0f,     0.0f, 1.0f, 0.0f,		0.0f, 0.5f,
+		 0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 0.5f
 	};
 
 	unsigned int indices[]{
-		0, 1, 3,
-		1, 2, 3
+		0, 1, 2,
 	};
 
 	unsigned int VBO;
@@ -113,7 +114,7 @@ int main() {
 
 	// load image, create texture and generate mipmaps
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
 
 	if (data)
 	{
@@ -136,7 +137,7 @@ int main() {
 
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
 	// load image, create texture and generate mipmaps
@@ -182,7 +183,7 @@ int main() {
 
 		ourShader.use();
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		//check and call events and swap the buffers
 		glfwSwapBuffers(window);
@@ -215,7 +216,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	else std::cout << char(key) << std::endl;
 }
 
-// vertex shader
+
+
+//vertex shader
 /*
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -232,9 +235,8 @@ void main()
 }
 */
 
-
-
 // fragment shader
+
 /*
 #version 330 core
 
@@ -247,6 +249,8 @@ uniform sampler2D ourTexture;
 uniform sampler2D ourTexture1;
 
 void main(){
-	FragColor = mix(texture(ourTexture, TexCoord), texture(ourTexture1, TexCoord), 0.3);
+	FragColor = mix(texture(ourTexture, TexCoord), texture(ourTexture1, TexCoord), 1.0f)*vec4(ourColor, 1.0f);
 }
+
 */
+

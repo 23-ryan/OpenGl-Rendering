@@ -42,9 +42,6 @@ int main() {
 	Shader ourShader("shader.vs", "shader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
-	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
-	// then it tends to wrap according to the method specified.
 	float vertices[] = {
 		// positions          // colors           // texture coords
 		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
@@ -136,7 +133,7 @@ int main() {
 
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
 	// load image, create texture and generate mipmaps
