@@ -7,13 +7,18 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "shader.h"
 #include "stb_image.h"
 
+float mixValue = 0.2f;
 
 void framebuffer_size_callback(GLFWwindow*, int, int);
 void keyCallback(GLFWwindow*, int, int, int, int);
-
+void changeMergeTextureParam(bool);
 
 int main() {
 	glfwInit(); // descriptable by name.
@@ -154,13 +159,17 @@ int main() {
 	stbi_image_free(data);
 
 
+	// Note the order of operations first the scaling will happen then rotation.
+	// think about the matrix multiplication
+	glm::mat4 trans;
+	glm::mat4 trans1;
+
 	ourShader.use();
 	glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture"), 0);
 	ourShader.setInt("ourTexture1", 1);
 
-
 	// To disable filling inside the polygon rendered.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIgLL);
 
 	// render loop
 	while (!glfwWindowShouldClose(window)) {
@@ -181,8 +190,39 @@ int main() {
 		// render container.
 
 		ourShader.use();
+		
+		// transformation operations
+		trans = glm::mat4(1.0f);
+		trans = glm::rotate(trans, float(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		
+		 //allocating the transformed matrix to the defined uniform location.
+		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		ourShader.setFloat("varMix", mixValue);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+		
+		ourShader.use();
+		
+		// transformation operations
+		trans1 = glm::mat4(1.0f);
+		trans1 = glm::translate(trans1, glm::vec3(-0.5f, 0.5f, 0.0f));
+		trans1 = glm::scale(trans1, glm::vec3(sin(glfwGetTime()), sin(glfwGetTime()), sin(glfwGetTime())));
+		
+		// allocating the transformed matrix to the defined uniform location.
+		transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans1));
+
+		ourShader.setFloat("varMix", mixValue);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+
+
 
 		//check and call events and swap the buffers
 		glfwSwapBuffers(window);
@@ -212,8 +252,25 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	else std::cout << char(key) << std::endl;
+	else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		changeMergeTextureParam(true);
+
+	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		changeMergeTextureParam(false);
+
 }
+
+void changeMergeTextureParam(bool signPositive) {
+	
+	if (!(abs(mixValue - 1.0f) <= 0.0001f) && signPositive) {
+		mixValue += 0.1f;
+	}
+	else if (!(abs(mixValue - 0.0f) <= 0.0001f) && !signPositive) {
+		mixValue -= 0.1f;
+	}
+	return;
+}	
+
 
 // vertex shader
 /*

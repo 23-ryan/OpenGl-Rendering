@@ -156,6 +156,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tex_mix_rectangle.h" />
+    <ClInclude Include="transformed_multitexture.h" />
     <ClInclude Include="twoTriangles.h" />
     <ClInclude Include="colorChange.h" />
     <ClInclude Include="vertexShaderColor.h" />
