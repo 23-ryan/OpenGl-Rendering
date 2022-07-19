@@ -59,6 +59,12 @@
     <ClInclude Include="transformed_multitexture.h">
       <Filter>beginning</Filter>
     </ClInclude>
+    <ClInclude Include="projectionOfRect.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="manyRotatingCube.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">

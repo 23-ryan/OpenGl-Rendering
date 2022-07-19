@@ -47,7 +47,7 @@ int main() {
 	Shader ourShader("shader.vs", "shader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
+
 	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
 	// then it tends to wrap according to the method specified.
 	//float vertices[] = {
@@ -206,7 +206,7 @@ int main() {
 
 	// Note the order of operations first the scaling will happen then rotation.
 	// think about the matrix multiplication
-	
+
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -262,8 +262,8 @@ int main() {
 
 		// render container.
 		glBindVertexArray(VAO);
-		for (unsigned int i = 0; i < 10; i++) 
-		{			
+		for (unsigned int i = 0; i < 10; i++)
+		{
 			ourShader.use();
 			model = glm::mat4(1.0);
 			model = glm::translate(model, cubePositions[i]);
@@ -271,13 +271,13 @@ int main() {
 				model = glm::rotate(model, (float)glm::radians(20.0f * i), glm::vec3(0.5f, 1.0f, 0.0f));
 			}
 			else {
-				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2*i, glm::vec3(0.5f, 1.0f, 0.0f));
+				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2 * i, glm::vec3(0.5f, 1.0f, 0.0f));
 			}
 			ourShader.setMat4("model", model);
 			ourShader.setFloat("varMix", mixValue);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			//glBindVertexArray(0);
-			}
+		}
 
 		// 36 vertices ==> 6(face) * 2(traingles per face) * 3(traingle vertices)
 
@@ -319,7 +319,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 void changeMergeTextureParam(bool signPositive) {
-	
+
 	if (!(abs(mixValue - 1.0f) <= 0.0001f) && signPositive) {
 		mixValue += 0.1f;
 	}
@@ -327,22 +327,28 @@ void changeMergeTextureParam(bool signPositive) {
 		mixValue -= 0.1f;
 	}
 	return;
-}	
+}
 
 
 // vertex shader
 /*
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
+//layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoord;
 
-out vec3 ourColor;
+//out vec3 ourColor;
 out vec2 TexCoord;
+
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
-   gl_Position = vec4(aPos, 1.0f);
-   ourColor = aColor;
+   gl_Position = proj * view * model * vec4(aPos, 1.0f);
+  // ourColor = aColor;
    TexCoord = aTexCoord;
 }
 */
@@ -355,13 +361,16 @@ void main()
 
 out vec4 FragColor;
 
-in vec3 ourColor;
+//in vec3 ourColor;
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D ourTexture1;
+uniform float varMix;
+
+
 
 void main(){
-	FragColor = mix(texture(ourTexture, TexCoord), texture(ourTexture1, TexCoord), 0.3);
+	FragColor = mix(texture(ourTexture1, vec2(TexCoord.x, TexCoord.y)), texture(ourTexture, TexCoord), varMix);
 }
 */

@@ -151,8 +151,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="colliding_star.h" />
+    <ClInclude Include="manyRotatingCube.h" />
     <ClInclude Include="muktitex_withcolor_triangle.h" />
     <ClInclude Include="multiColorTriangle.h" />
+    <ClInclude Include="projectionOfRect.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tex_mix_rectangle.h" />
