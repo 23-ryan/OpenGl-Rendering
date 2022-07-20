@@ -182,7 +182,7 @@ int main() {
 
 	// load image, create texture and generate mipmaps
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("Images/container.jpg", &width, &height, &nrChannels, 0);
 
 	if (data)
 	{
@@ -209,7 +209,7 @@ int main() {
 
 
 	// load image, create texture and generate mipmaps
-	data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
+	data = stbi_load("Images/awesomeface.png", &width, &height, &nrChannels, 0);
 
 	if (data)
 	{
