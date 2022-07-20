@@ -7,18 +7,13 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "shader.h"
 #include "stb_image.h"
 
-float mixValue = 0.2f;
 
 void framebuffer_size_callback(GLFWwindow*, int, int);
 void keyCallback(GLFWwindow*, int, int, int, int);
-void changeMergeTextureParam(bool);
+
 
 int main() {
 	glfwInit(); // descriptable by name.
@@ -29,7 +24,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //??
 
 	//Create window
-	GLFWwindow* window = glfwCreateWindow(1000, 1000, "LearnOpenGl", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(800, 800, "LearnOpenGl", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "failed to load window" << std::endl;
 		glfwTerminate(); // terminate GLFW if window is not created.
@@ -47,97 +42,49 @@ int main() {
 	Shader ourShader("shader.vs", "shader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
-	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
-	// then it tends to wrap according to the method specified.
-	//float vertices[] = {
-	//	// positions          // colors           // texture coords
-	//	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-	//	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-	//	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-	//	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
-	//};
-
 	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		// positions          // colors           // texture coords
+		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 	};
 
-
-	//unsigned int indices[]{
-	//	0, 1, 3,
-	//	1, 2, 3
-	//};
+	unsigned int indices[]{
+		0, 1, 3,
+		1, 2, 3
+	};
 
 	unsigned int VBO;
 	unsigned int VAO;
-	//unsigned int EBO;
+	unsigned int EBO;
 
 	// bind the Vertex Array Object first, then bindand set vertex buffer(s), and then configure vertex attributes(s).
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	//glGenBuffers(1, &EBO);
+	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// for the location attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	//for the color attribute
 	//the last element specifies the offset--> space before the required data. --> which in this case are colors
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// you have to enable the vertexAttribPointer before using it, 
 	// according to the correct starting location.
-	//glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -186,7 +133,7 @@ int main() {
 
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
 	// load image, create texture and generate mipmaps
@@ -204,42 +151,13 @@ int main() {
 	stbi_image_free(data);
 
 
-	// Note the order of operations first the scaling will happen then rotation.
-	// think about the matrix multiplication
-	
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-
-
-	glm::mat4 model, view, proj;
-	view = glm::mat4(1.0);
-	proj = glm::mat4(1.0);
-
 	ourShader.use();
 	glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture"), 0);
 	ourShader.setInt("ourTexture1", 1);
 
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.0f));
-	proj = glm::perspective(glm::radians(65.0f), 1000.0f / 1000.0f, 0.1f, 100.0f);
+
 	// To disable filling inside the polygon rendered.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIgLL);
-
-	ourShader.use();
-	int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-	int projLoc = glGetUniformLocation(ourShader.ID, "proj");
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &proj[0][0]);
-
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// render loop
 	while (!glfwWindowShouldClose(window)) {
@@ -248,10 +166,7 @@ int main() {
 
 		//rendering commands here
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f); // 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear --> fill {as i understand} of course its not correct. // Now I get it, its clearing the buffer from the previous rendered frame.
-
-		// Activating the depth testing
-		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT); // Clear --> fill {as i understand} of course its not correct.
 
 		// bind the texture // maybe, its also setting the value of the uniform variabe sampler2D 
 		glActiveTexture(GL_TEXTURE0);  // activating the  textire unit first before binding.
@@ -261,26 +176,10 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture1);
 
 		// render container.
+
+		ourShader.use();
 		glBindVertexArray(VAO);
-		for (unsigned int i = 0; i < 10; i++) 
-		{			
-			ourShader.use();
-			model = glm::mat4(1.0);
-			model = glm::translate(model, cubePositions[i]);
-			if (false) {
-				model = glm::rotate(model, (float)glm::radians(20.0f * i), glm::vec3(0.5f, 1.0f, 0.0f));
-			}
-			else {
-				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2*i, glm::vec3(0.5f, 1.0f, 0.0f));
-			}
-			ourShader.setMat4("model", model);
-			ourShader.setFloat("varMix", mixValue);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			//glBindVertexArray(0);
-			}
-
-		// 36 vertices ==> 6(face) * 2(traingles per face) * 3(traingle vertices)
-
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//check and call events and swap the buffers
 		glfwSwapBuffers(window);
@@ -289,7 +188,7 @@ int main() {
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	//glDeleteBuffers(1, &EBO);
+	glDeleteBuffers(1, &EBO);
 	ourShader.deleteProgram();
 
 	glfwTerminate();
@@ -310,25 +209,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		changeMergeTextureParam(true);
-
-	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		changeMergeTextureParam(false);
-
+	else std::cout << char(key) << std::endl;
 }
-
-void changeMergeTextureParam(bool signPositive) {
-	
-	if (!(abs(mixValue - 1.0f) <= 0.0001f) && signPositive) {
-		mixValue += 0.1f;
-	}
-	else if (!(abs(mixValue - 0.0f) <= 0.0001f) && !signPositive) {
-		mixValue -= 0.1f;
-	}
-	return;
-}	
-
 
 // vertex shader
 /*
