@@ -65,6 +65,12 @@
     <ClInclude Include="manyRotatingCube.h">
       <Filter>beginning</Filter>
     </ClInclude>
+    <ClInclude Include="cameraMoveWithoutMouse.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">
