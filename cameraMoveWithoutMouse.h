@@ -13,24 +13,18 @@
 
 #include "shader.h"
 #include "stb_image.h"
-#include "Camera.h"
-
-#define SCR_WIDTH 400.0f
-#define SCR_HEIGHT 400.0f
 
 float mixValue = 0.2f;
-float lastX = SCR_WIDTH / 2 , lastY = SCR_HEIGHT;
-bool firstMouse = true;
-float currentFrame, lastFrame, deltaTime;
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 4.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float lastFrame = 0.0f, deltaTime = 0.0f;
 
-Camera myCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 
 void framebuffer_size_callback(GLFWwindow*, int, int);
 void keyCallback(GLFWwindow*, int, int, int, int);
 void changeMergeTextureParam(bool);
-void mouse_callback(GLFWwindow*, double, double);
-void scroll_callback(GLFWwindow*, double, double);
 
 int main() {
 	glfwInit(); // descriptable by name.
@@ -55,10 +49,6 @@ int main() {
 
 	// to change the rendering after the window size change.
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-	glfwSetKeyCallback(window, keyCallback);
 
 	// activating the depth test
 	glEnable(GL_DEPTH_TEST);
@@ -66,7 +56,7 @@ int main() {
 	Shader ourShader("shader.vs", "shader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
+
 	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
 	// then it tends to wrap according to the method specified.
 	//float vertices[] = {
@@ -225,7 +215,7 @@ int main() {
 
 	// Note the order of operations first the scaling will happen then rotation.
 	// think about the matrix multiplication
-	
+
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -239,32 +229,32 @@ int main() {
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
+
+	glm::mat4 model, view, proj;
+	view = glm::mat4(1.0);
+	proj = glm::mat4(1.0);
+
 	ourShader.use();
 	glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture"), 0);
 	ourShader.setInt("ourTexture1", 1);
 
+	proj = glm::perspective(glm::radians(45.0f), 800.0f / 800.0f, 0.1f, 100.0f);
 	// To disable filling inside the polygon rendered.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIgLL);
-	
-	glm::mat4 model, view, proj;
-	model = glm::mat4(1.0f);
-	view = glm::mat4(1.0f);
-	proj = glm::mat4(1.0f);
+
+	ourShader.use();
+	ourShader.setMat4("proj", proj);
+
+	float radius = 30.0f;
+	float camX, camZ;
+
+	float currentFrame;
 
 	// render loop
 	while (!glfwWindowShouldClose(window)) {
 
-		//updating deltaTime
-		currentFrame = static_cast<float>(glfwGetTime());
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
-		//updating the mouse_callback params
-
-
-
 		// input
-		
+		glfwSetKeyCallback(window, keyCallback);
 
 		//rendering commands here
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f); // 
@@ -278,46 +268,56 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 
-		// view and proj matrix
-		// cameraFront, cameraPos --> changing in the callback_function
-		view = myCamera.GetViewMatrix();
-		proj = glm::perspective(glm::radians(myCamera.Zoom), 800.0f / 800.0f, 0.1f, 100.0f);
-		
-		
+		// render container.
+
+		// defining the view matrix
+		//camX = radius * cos((float)glfwGetTime());
+		//camZ = radius * sin((float)glfwGetTime());
+
+		//cameraPos = glm::vec3(camX, 0.0f, camZ);
+		//Target = glm::vec3(0.0f, 0.0f, 0.0f);
+		//cameraDirection = glm::normalize(cameraPos - Target);
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+		ourShader.use();
+		ourShader.setMat4("view", view);
 		// defining the model matrix to render rotatiing objects.
 		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
-		{			
+		{
+			//maintaining deltaTime
+			currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+
+			ourShader.use();
 			model = glm::mat4(1.0);
 			model = glm::translate(model, cubePositions[i]);
 			if (false) {
 				model = glm::rotate(model, (float)glm::radians(20.0f * i), glm::vec3(0.5f, 1.0f, 0.0f));
 			}
 			else {
-				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2*i, glm::vec3(0.5f, 1.0f, 0.0f));
+				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2 * i, glm::vec3(0.5f, 1.0f, 0.0f));
 			}
-
-			// updating the matrices i.e, model, view, projection.
-			ourShader.use();
 			ourShader.setMat4("model", model);
-			ourShader.setMat4("proj", proj);
-			ourShader.setMat4("view", view);
 			ourShader.setFloat("varMix", mixValue);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-
+			//glBindVertexArray(0);
 		}
 
 		// 36 vertices ==> 6(face) * 2(traingles per face) * 3(traingle vertices)
+
 		//check and call events and swap the buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	}
 
-	ourShader.deleteProgram();
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
+	ourShader.deleteProgram();
 
 	glfwTerminate();
 	return 0;
@@ -333,49 +333,29 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // to callback function to process the input and print that, this callback function will be called by the 
 //	function "glfwSetKeyCallback()", whcih takes this callback function as argument along with the context window.
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	
+	const float cameraSpeed = 10000.0f * deltaTime; // adjust accordingly;
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += cameraFront * cameraSpeed;
+
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraFront * cameraSpeed;
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraUp, cameraFront)) * cameraSpeed;
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraUp, cameraFront)) * cameraSpeed;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		myCamera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		myCamera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		myCamera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		myCamera.ProcessKeyboard(LEFT, deltaTime);
-
-
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		changeMergeTextureParam(true);
+
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		changeMergeTextureParam(false);
 
-}
-
-
-void mouse_callback(GLFWwindow* window, double xPos, double yPos)
-{
-	if (firstMouse) // initially set to true
-	{
-		lastX = static_cast<float>(xPos);
-		lastY = static_cast<float>(yPos);
-		firstMouse = false;
-	}
-
-	float Xoffset = static_cast<float>(xPos) - lastX;
-	float Yoffset = lastY - static_cast<float>(yPos); // reversed since y-coordinates range from bottom to top.
-	lastX = static_cast<float>(xPos);
-	lastY = static_cast<float>(yPos);
-
-	myCamera.ProcessMouseMovement(Xoffset, Yoffset);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	myCamera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void changeMergeTextureParam(bool signPositive) {
