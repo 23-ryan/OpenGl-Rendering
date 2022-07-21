@@ -60,10 +60,37 @@ public:
         updateCameraVectors();
     }
 
+    glm::mat4 myLookAt() {
+
+        glm::mat4 translate = glm::mat4(
+            glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),  // it represents a coloumn // glm --> conventions
+            glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
+            glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
+            glm::vec4(-Position, 1.0f)
+        );
+
+        //glm::mat4 rotate = glm::mat4(1.0f);
+        glm::vec3 zaxis = glm::normalize(-Front);
+        glm::vec3 up = glm::normalize(WorldUp);
+        glm::vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
+        glm::vec3 yaxis = glm::cross(zaxis, xaxis);
+
+        glm::mat4 rotate = glm::mat4(glm::vec4(xaxis, 0.0f),  // it represents a coloumn
+            glm::vec4(yaxis, 0.0f),
+            glm::vec4(zaxis, 0.0f),
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+        );
+
+        rotate = glm::transpose(rotate); // to make the axis in rows.
+
+        return rotate * translate;
+    }
+
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        return glm::lookAt(Position, Position + Front, Up);
+        //return glm::lookAt(Position, Position + Front, WorldUp);
+        return myLookAt();
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
