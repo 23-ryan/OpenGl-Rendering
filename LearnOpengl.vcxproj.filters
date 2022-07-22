@@ -16,6 +16,9 @@
     <Filter Include="beginning">
       <UniqueIdentifier>{9f163fb2-3b94-4253-a401-59c00109527b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="beginning\UpandDown">
+      <UniqueIdentifier>{f7394e47-86f1-4c7f-a03a-ae3bf5fce557}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,12 +74,30 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="uPAndDown.h">
+      <Filter>beginning\UpandDown</Filter>
+    </ClInclude>
+    <ClInclude Include="cam.h">
+      <Filter>beginning\UpandDown</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="platformWithCubesRotating.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">
       <Filter>Source Files</Filter>
     </None>
     <None Include="shader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaderA.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaderA.fs">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

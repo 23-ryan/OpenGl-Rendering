@@ -150,24 +150,30 @@
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cam.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cameraMoveWithoutMouse.h" />
     <ClInclude Include="colliding_star.h" />
     <ClInclude Include="manyRotatingCube.h" />
     <ClInclude Include="muktitex_withcolor_triangle.h" />
     <ClInclude Include="multiColorTriangle.h" />
+    <ClInclude Include="platformWithCubesRotating.h" />
     <ClInclude Include="projectionOfRect.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="tex_mix_rectangle.h" />
     <ClInclude Include="transformed_multitexture.h" />
     <ClInclude Include="twoTriangles.h" />
     <ClInclude Include="colorChange.h" />
+    <ClInclude Include="uPAndDown.h" />
     <ClInclude Include="vertexShaderColor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="shaderA.fs" />
+    <None Include="shaderA.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png" />

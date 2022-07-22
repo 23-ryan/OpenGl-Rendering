@@ -21,7 +21,7 @@
 #define SCR_HEIGHT 400.0f
 
 float mixValue = 0.2f;
-float lastX = SCR_WIDTH / 2 , lastY = SCR_HEIGHT;
+float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT;
 bool firstMouse = true;
 float currentFrame, lastFrame, deltaTime;
 
@@ -70,7 +70,7 @@ int main() {
 	Shader floorShader("shaderA.vs", "shaderA.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
+
 	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
 	// then it tends to wrap according to the method specified.
 	//float vertices[] = {
@@ -151,8 +151,8 @@ int main() {
 	unsigned int VBO_A;
 	unsigned int EBO_A;
 
-	 //bind the Vertex Array Object first, then bindand set vertex buffer(s), and then configure vertex attributes(s).
-	glGenVertexArrays(1 ,&VAO);
+	//bind the Vertex Array Object first, then bindand set vertex buffer(s), and then configure vertex attributes(s).
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
 	glBindVertexArray(VAO);
@@ -166,7 +166,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	
+
 
 	glGenVertexArrays(1, &VAO_A);
 	glGenBuffers(1, &VBO_A);
@@ -187,7 +187,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	
+
 
 	// load image, create texture and generate mipmaps
 	Texture texture1("Images/container.jpg");
@@ -225,7 +225,7 @@ int main() {
 	floorShader.setInt("myTexture", 2);
 	// To disable filling inside the polygon rendered.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIgLL);
-	
+
 	glm::mat4 model, view, proj;
 	model = glm::mat4(1.0f);
 	view = glm::mat4(1.0f);
@@ -238,7 +238,7 @@ int main() {
 		currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		
+
 		//rendering commands here
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f); // 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear --> fill {as i understand} of course its not correct. // Now I get it, its clearing the buffer from the previous rendered frame.
@@ -268,17 +268,17 @@ int main() {
 
 		// defining the model matrix to render rotatiing objects.
 		for (unsigned int i = 0; i < 16; i++)
-		{			
+		{
 			model = glm::mat4(1.0);
 			model = glm::translate(model, cubePositions[i]);
 			if (false) {
 				model = glm::rotate(model, (float)glm::radians(20.0f * i), glm::vec3(0.5f, 1.0f, 0.0f));
 			}
 			else {
-				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2*i, glm::vec3(0.5f, 1.0f, 0.0f));
+				model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f) * 2 * i, glm::vec3(0.5f, 1.0f, 0.0f));
 			}
 
-		//	// updating the matrices i.e, model, view, projection.
+			//	// updating the matrices i.e, model, view, projection.
 
 			ourShader.use();
 			ourShader.setMat4("model", model);
@@ -320,7 +320,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // to callback function to process the input and print that, this callback function will be called by the 
 //	function "glfwSetKeyCallback()", whcih takes this callback function as argument along with the context window.
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -385,15 +385,18 @@ void changeMergeTextureParam(bool signPositive) {
 /*
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoord;
+layout (location = 1) in vec2 aTexCoord;
 
-out vec3 ourColor;
 out vec2 TexCoord;
+
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
-   gl_Position = vec4(aPos, 1.0f);
-   ourColor = aColor;
+   gl_Position = proj * view * model * vec4(aPos, 1.0f);
    TexCoord = aTexCoord;
 }
 */
@@ -405,14 +408,55 @@ void main()
 #version 330 core
 
 out vec4 FragColor;
-
-in vec3 ourColor;
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D ourTexture1;
+uniform float varMix;
+
 
 void main(){
-	FragColor = mix(texture(ourTexture, TexCoord), texture(ourTexture1, TexCoord), 0.3);
+	FragColor = mix(texture(ourTexture1, vec2(TexCoord.x, TexCoord.y)), texture(ourTexture, TexCoord), varMix);
 }
 */
+
+
+// vertex shaderA
+/*
+* #version 330 core
+layout (location = 2) in vec3 aPos;
+layout (location = 3) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
+void main()
+{
+   gl_Position = proj * view * model * vec4(aPos, 1.0f);
+   //gl_Position = vec4(aPos, 1.0f);
+   TexCoord = aTexCoord;
+}
+*/
+
+
+
+// fragment shader
+/*
+#version 330 core
+
+out vec4 FragColor;
+in vec2 TexCoord;
+
+uniform sampler2D myTexture;
+
+void main(){
+	FragColor = texture(myTexture, TexCoord);
+}
+*/
+
+
+
