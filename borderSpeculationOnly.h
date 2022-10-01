@@ -21,7 +21,7 @@
 #define SCR_HEIGHT 400.0f
 
 //float mixValue = 0.2f;
-float lastX = SCR_WIDTH / 2 , lastY = SCR_HEIGHT;
+float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT;
 bool firstMouse = true;
 float currentFrame, lastFrame, deltaTime;
 glm::vec3 lightPos = glm::vec3(1.0f, 0.0f, 2.0f);
@@ -72,7 +72,7 @@ int main() {
 	Shader lightShader("lightShader.vs", "lightShader.fs");
 
 	// *Normalized* device co-ordinates as float array.
-	
+
 	// the texture coordinates are from 0.0 to 1.0 but if u specify a larger value,
 	// then it tends to wrap according to the method specified.
 	//float vertices[] = {
@@ -154,7 +154,7 @@ int main() {
 	//unsigned int EBO_A;
 
 	//bind the Vertex Array Object first, then bindand set vertex buffer(s), and then configure vertex attributes(s).
-	glGenVertexArrays(1 ,&VAO);
+	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	//glGenVertexArrays(1, &lightVAO);
@@ -163,7 +163,7 @@ int main() {
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8* sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -203,11 +203,11 @@ int main() {
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindVertexArray(0);
 
-	
+
 
 	// load image, create texture and generate mipmaps
 	Texture texture("Images/container2.png");
-	Texture specTexture("Images/lighting_maps_specular_color.png");
+	Texture specTexture("Images/container2_specular.png");
 
 	glm::vec3 cubePositions[] = {
 		glm::vec3(-2.5f,  5.0f,  2.5f),
@@ -242,9 +242,10 @@ int main() {
 	ourShader.setVec3("light.specular", glm::vec3(1.0f));
 
 
+
 	// To disable filling inside the polygon rendered.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FIgLL);
-	
+
 	glm::mat4 model, view, proj;
 	model = glm::mat4(1.0f);
 	view = glm::mat4(1.0f);
@@ -257,7 +258,7 @@ int main() {
 		currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		
+
 		//rendering commands here
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f); // 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear --> fill {as i understand} of course its not correct. // Now I get it, its clearing the buffer from the previous rendered frame.
@@ -299,42 +300,42 @@ int main() {
 
 		// updating the matrices i.e, model, view, projection.
 		// model = glm::rotate(model, (float)glfwGetTime() * (float)glm::radians(20.0f)*10, glm::vec3(0.5f, 1.0f, 0.0f));
-			
-			
 
 
 
-			ourShader.use();
-			ourShader.setMat4("model", model);
-			ourShader.setMat4("proj", proj);
-			ourShader.setMat4("view", view);
-			ourShader.setVec3("viewPos", myCamera.getCameraPos());
-			ourShader.setVec3("lightPos", lightPos);
-			//ourShader.setVec3("light.diffuse", diffuseColor);
-			//ourShader.setVec3("light.ambient", ambientColor);
 
-			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glBindVertexArray(0);
+
+		ourShader.use();
+		ourShader.setMat4("model", model);
+		ourShader.setMat4("proj", proj);
+		ourShader.setMat4("view", view);
+		ourShader.setVec3("viewPos", myCamera.getCameraPos());
+		ourShader.setVec3("lightPos", lightPos);
+		//ourShader.setVec3("light.diffuse", diffuseColor);
+		//ourShader.setVec3("light.ambient", ambientColor);
+
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 
 		//}
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::translate(model, glm::vec3(1.0f, 0.0f, 2.0f));
-			lightPos.x = model[3][0];
-			lightPos.y = model[3][1];
-			lightPos.z = model[3][2];
+		model = glm::mat4(1.0f);
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 2.0f));
+		lightPos.x = model[3][0];
+		lightPos.y = model[3][1];
+		lightPos.z = model[3][2];
 
-			model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::scale(model, glm::vec3(0.2f));
 
-			lightShader.use();
-			lightShader.setMat4("model", model);
-			lightShader.setMat4("proj", proj);
-			lightShader.setMat4("view", view);
+		lightShader.use();
+		lightShader.setMat4("model", model);
+		lightShader.setMat4("proj", proj);
+		lightShader.setMat4("view", view);
 
-			glBindVertexArray(lightVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glBindVertexArray(0);
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -363,7 +364,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // to callback function to process the input and print that, this callback function will be called by the 
 //	function "glfwSetKeyCallback()", whcih takes this callback function as argument along with the context window.
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -428,16 +429,25 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 /*
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoord;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTextureCoord;
 
-out vec3 ourColor;
-out vec2 TexCoord;
+out vec3 Normal;
+out vec3 FragPos; // positon of the vertex in the world's view.
+out vec2 TextureCoord;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
-   gl_Position = vec4(aPos, 1.0f);
-   ourColor = aColor;
-   TexCoord = aTexCoord;
+	FragPos = vec3(model * vec4(aPos, 1.0f));
+	gl_Position = proj * view * model * vec4(aPos, 1.0f);
+	// See, the next operation is necessary when rotation or scaling operation is performed,
+	// because it will change the actual direction of the normal vector, so to undo that we have to do this.
+	Normal = mat3(transpose(inverse(model))) * aNormal;
+	TextureCoord = aTextureCoord;
 }
 */
 
@@ -448,14 +458,75 @@ void main()
 #version 330 core
 
 out vec4 FragColor;
+in vec3 Normal;
+in vec3 FragPos;
+in vec2 TextureCoord;
 
-in vec3 ourColor;
-in vec2 TexCoord;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
 
-uniform sampler2D ourTexture;
-uniform sampler2D ourTexture1;
+struct Material {
+	sampler2D diffuse;
+	sampler2D specular;
+	float shininess;
+};
+
+struct Light {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+
+uniform Material material;
+uniform Light light;
 
 void main(){
-	FragColor = mix(texture(ourTexture, TexCoord), texture(ourTexture1, TexCoord), 0.3);
+	vec3 lightDir = normalize(lightPos - FragPos);
+	vec3 norm = normalize(Normal);
+	float diff = max(dot(norm, lightDir), 0.0f);
+	vec3 diffuse = (diff * light.diffuse) * vec3(texture(material.diffuse, TextureCoord));
+
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TextureCoord));
+
+	vec3 viewDir = normalize(viewPos - FragPos);
+	vec3 reflectDir = reflect(-lightDir, Normal);
+	float spec = pow(max(dot(reflectDir, viewDir), 0.0f), material.shininess); // material.shininess--> represents the shininess.
+	vec3 specular = (spec * light.specular) * (vec3(texture(material.specular, TextureCoord)));
+
+	vec3 result = ambient + diffuse + specular;
+	FragColor = vec4(result, 1.0f);
+}
+*/
+
+//light source vertexShader
+/*
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+// out vec3 objectColor;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
+// uniform vec3 sourceColor;
+
+void main()
+{
+   gl_Position = proj * view * model * vec4(aPos, 1.0f);
+   // objectColor = sourceColor;
+}
+
+*/
+
+//light source fragmentShader
+/*
+# version 330 core
+
+out vec4 FragColor;
+// in vec3 objectColor;
+
+void main(){
+	FragColor = vec4(vec3(1.0f), 1.0f);
 }
 */

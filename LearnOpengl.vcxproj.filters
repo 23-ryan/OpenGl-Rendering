@@ -80,10 +80,22 @@
     <ClInclude Include="cam.h">
       <Filter>beginning\UpandDown</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="platformWithCubesRotating.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="floorWithMultipleShaders.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhongLightingWorldSpace.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="ColoredLightEffect.h">
+      <Filter>beginning</Filter>
+    </ClInclude>
+    <ClInclude Include="borderSpeculationOnly.h">
       <Filter>beginning</Filter>
     </ClInclude>
   </ItemGroup>
@@ -100,6 +112,12 @@
     <None Include="shaderA.fs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="lightShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="lightShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="container.jpg">
@@ -109,6 +127,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="wall.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\container2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\container2_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\lighting_maps_specular_color.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
